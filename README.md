@@ -1,0 +1,3 @@
+# Proxy searcher
+
+needs geckodriver
