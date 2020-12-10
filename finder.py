@@ -16,7 +16,17 @@ options = Options()
 options.headless = True
 #options.headless = False 
 
+def mkdir(path):
+    try:
+        return os.mkdir(path)
+    except:
+        pass
+
 import os
+ALL_INFO_DIR = "all_info"
+OUT_DIR = "out"
+mkdir(ALL_INFO_DIR)
+mkdir(OUT_DIR)
 driver = webdriver.Firefox(options=options, service_log_path=os.devnull)
 driver.get(all_url)
 
@@ -43,13 +53,13 @@ for dd, root in roots:
     tbody = root.select("#resultTable > tbody:nth-child(2)")[0]
     for tr in tbody.findAll("tr"):
         #print([x.findAll(text=True) for x in tr.findAll("td")[:3]])
-        (ipp, loc, t) = [x.findAll(text=True)[0] for x in tr.findAll("td")[:3]]
-        output[dd].append([ipp, loc, t])
+        (ipp, loc, protocol, kind) = [x.findAll(text=True)[0] for x in tr.findAll("td")[:4]]
+        output[dd].append([ipp, loc, protocol, kind])
 print("\n".join([f"{len(v)} from {k}" for k, v in output.items()]))
-print("Writing to disk")
-open("all_info.txt", "w").write("\n\n".join([k + "\n" + "\n".join(["|".join(x) for x in v]) for k, v in output.items()]))
-open("out.txt", "w").write("\n".join(["\n".join([i[0] for i in v]) for v in output.values()]))
-
+print("Writing to disk...")
+open(os.path.join(ALL_INFO_DIR, f"all_info-{int(time.time())}.txt"), "w").write("\n\n".join([k + "\n" + "\n".join(["|".join(x) for x in v]) for k, v in output.items()]))
+open(os.path.join(OUT_DIR, f"out-{int(time.time())}.txt"), "w").write("\n".join(["\n".join([i[0] for i in v]) for v in output.values()]))
+input()
 
 
 
