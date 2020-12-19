@@ -1,1 +1,4 @@
 env/
+out/
+geckodriver.bin
+__pycache__/
