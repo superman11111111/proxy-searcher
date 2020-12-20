@@ -8,21 +8,9 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver import ActionChains 
 from bs4 import BeautifulSoup
-from settings import BINARY_PATH
+from settings import *
+import os
 
-
-def dprint(msg):
-    print(f"[DEBUG]: {msg}")
-
-
-dprint(f"BINARY_PATH={BINARY_PATH}")
-
-all_url = "https://checkerproxy.net/getAllProxy"
-output = {}
-roots = []
-options = Options()
-options.headless = True
-#options.headless = False 
 
 def mkdir(path):
     try:
@@ -30,11 +18,14 @@ def mkdir(path):
     except:
         pass
 
-import os
-OUT_DIR = "out"
 mkdir(OUT_DIR)
-driver = webdriver.Firefox(firefox_binary=FirefoxBinary(BINARY_PATH), options=options, service_log_path=os.devnull)
-driver.get(all_url)
+
+output = {}
+roots = []
+options = Options()
+
+driver = webdriver.Firefox(executable_path=BINARY_PATH, options=options, service_log_path=os.devnull)
+driver.get(ALL_URL)
 
 ul = BeautifulSoup(driver.page_source, features="html.parser").select(".block > ul:nth-child(2)")
 dates = [x.findAll(href=True)[0]["href"] for x in ul[0].findChildren("li")]
@@ -65,5 +56,9 @@ print("\n".join([f"{len(v)} from {k}" for k, v in output.items()]))
 print("Writing to disk...")
 open(os.path.join(OUT_DIR, f"all_info-{int(time.time())}.txt"), "w").write("\n\n".join([k + "\n" + "\n".join(["|".join(x) for x in v]) for k, v in output.items()]))
 open(os.path.join(OUT_DIR, f"out-{int(time.time())}.txt"), "w").write("\n".join(["\n".join([i[0] for i in v]) for v in output.values()]))
-input()
+input("Press enter to quit... ")
+
+
+
+
 

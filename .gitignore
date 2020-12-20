@@ -2,3 +2,4 @@ env/
 out/
 geckodriver.bin
 __pycache__/
+out.txt
