@@ -23,6 +23,7 @@ mkdir(OUT_DIR)
 output = {}
 roots = []
 options = Options()
+options.headless = DRIVER_HEADLESS
 
 driver = webdriver.Firefox(executable_path=BINARY_PATH, options=options, service_log_path=os.devnull)
 driver.get(ALL_URL)
